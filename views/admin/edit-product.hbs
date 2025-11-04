@@ -1,0 +1,33 @@
+<section>
+    <div class="container mt-4">
+        <div class="row">
+            <h2 class="text-center">Edit Product</h2>
+            <form action="/admin/edit-product/{{product._id}}" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" name="name" class="form-control" id="name" placeholder="Name" value="{{ product.name }}">
+                </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <input type="text" name="category" class="form-control" id="category" placeholder="Category" value="{{ product.category }}">
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="text" name="price" class="form-control" id="price" placeholder="Price" value="{{ product.price }}">
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <input type="text" name="description" class="form-control" id="description" placeholder="Description" value="{{ product.description }}">
+                </div>
+                <div class="mb-3 card">
+                    <img src="/product-images/{{product._id}}.webp" alt="{{ product.name }} image" class="card-img-top m-3"  style="width:8rem;height: auto" id="imageView">
+                    <div class="card-body">
+                        <label for="image" class="card-title">Image</label>
+                        <input type="file" class="form-control" id="image" name="image" onchange="viewImage(event)">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">Submit</button>
+            </form>
+        </div>
+    </div>
+</section>

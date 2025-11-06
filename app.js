@@ -14,14 +14,14 @@ const session = require('express-session');
 // -----------------------------
 // 🚀 App Initialization
 // -----------------------------
-const app = express(); // ✅ use const instead of var
+const app = express();
 app.use(express.static('public'));
 
 // -----------------------------
 // 🧭 Route Imports
 // -----------------------------
-const userRouter = require('./routes/user');   // ✅ const
-const adminRouter = require('./routes/admin'); // ✅ const
+const userRouter = require('./routes/user');   
+const adminRouter = require('./routes/admin'); 
 
 // -----------------------------
 // 🖼️ View Engine Setup

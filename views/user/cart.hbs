@@ -1,1 +1,40 @@
-<h2>Cart is empty</h2>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 my-5">
+                <div class="card bg-light">
+                    <div class="card-header">
+                        <h4>Shopping Cart</h4>
+                    </div>
+                    <div class="card-body m-2">
+
+                        {{#each products}}
+
+                            <div class="card mb-3">
+                                <div class="row g-0">
+                                    <div class="col-4 col-sm-2 col-xxl-1">
+                                        <img src="/product-images/{{this._id}}.webp" class="m-2" alt="..."
+                                             style="height:8rem;width:6rem;">
+                                    </div>
+                                    <div class="col-8 col-md-10 col-xxl-11">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{this.name}}</h5>
+                                            <p class="card-text fs-6">{{this.description}}</p>
+                                            <button class="btn btn-primary fw-bold">-</button>
+                                            <span class="mx-2">1</span>
+                                            <button class="btn btn-primary fw-bold">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        {{/each}}
+
+                        <a href="#" class="btn btn-success float-end fs-5">Place Order</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

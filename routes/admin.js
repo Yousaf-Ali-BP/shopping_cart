@@ -43,7 +43,7 @@ router.post('/edit-product/:id',function (req, res) {
     const productId = req.params.id;
     productHelpers.updateProduct(productId, req.body).then(() => {
         res.redirect('/admin');
-        if(req.files.image){
+        if(req.files && req.files.image){
             let image=req.files.image
             image.mv('./public/product-images/' +productId+ '.webp')
         }

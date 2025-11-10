@@ -2,9 +2,10 @@ const db = require("../config/connection")
 const collection = require('../config/collections')
 const bcrypt = require('bcrypt')
 const {ObjectId} = require('mongodb');
+const {log} = require("debug");
 
 module.exports = {
-    dosignup: async (userdata) => {
+    dosignup: async function (userdata) {
         try {
             let user = await db.get().collection(collection.USER_COLLECTION).findOne({email: userdata.email})
             let response = {}
@@ -24,7 +25,7 @@ module.exports = {
         }
 
     },
-    dologin: async (userdata) => {
+    dologin: async function (userdata) {
         let response = {}
         try {
             const user = await db.get().collection(collection.USER_COLLECTION).findOne({email: userdata.email})
@@ -48,60 +49,162 @@ module.exports = {
         }
     },
 
-    addToCart: async (productId, userId) => {
+
+    addToCart: async function (productId, userId) {
         try {
             userId = new ObjectId(userId)
             productId = new ObjectId(productId)
-            const userCart = await db.get().collection(collection.CART_COLLECTION).findOne({user: userId})
-            if (userCart) {
-                return await db.get().collection(collection.CART_COLLECTION).updateOne({user: userId}, {$push: {products: productId}})
-            } else {
-                let cartObj = {
-                    user: userId,
-                    products: [productId]
-                }
-                return await db.get().collection(collection.CART_COLLECTION).insertOne(cartObj)
+            let productObj = {
+                item: productId,
+                quantity: 1
             }
+            const userCart = await db.get().collection(collection.CART_COLLECTION).findOne({user: userId})
+
+            if (userCart) {
+
+                //Check product already exist
+                let productExists = userCart.products.find(product => product.item.toString() === productId.toString())
+
+                if (productExists) {
+                    //Increment quantity
+                    await db.get().collection(collection.CART_COLLECTION).updateOne(
+                        {user: userId, 'products.item': productId},
+                        {$inc: {'products.$.quantity': 1}}
+                    )
+                } else {
+                    //Add new product
+                    await db.get().collection(collection.CART_COLLECTION).updateOne(
+                        {user: userId},
+                        {$push: {products: productObj}}
+                    )
+                }
+            } else {
+                //New cart for user
+                const cartObject = {
+                    user: userId,
+                    products: [productObj]
+                }
+                await db.get().collection(collection.CART_COLLECTION).insertOne(cartObject)
+
+            }
+
         } catch (err) {
             console.log(err)
         }
     },
 
-    getCartProducts: async (userId) => {
+    getCartProducts: async function (userId) {
         try {
             userId = new ObjectId(userId)
             const cartItems = await db.get().collection(collection.CART_COLLECTION).aggregate([
                 {
                     $match: {user: userId}
                 },
+                {$unwind: '$products'},
                 {
                     $lookup: {
-                        from:collection.PRODUCT_COLLECTION,
-                        localField: 'products',
+                        from: collection.PRODUCT_COLLECTION,
+                        localField: 'products.item',
                         foreignField: '_id',
-                        as:'cartItems'
+                        as: 'cartItems'
+                    }
+                },
+                {$unwind: '$cartItems'},
+                {
+                    $project: {
+                        item: '$cartItems._id',
+                        name: '$cartItems.name',
+                        price: '$cartItems.price',
+                        description: '$cartItems.description',
+                        quantity: '$products.quantity'
                     }
                 }
             ]).toArray()
-            return cartItems[0].cartItems
-        }catch(err) {
+            return cartItems
+        } catch (err) {
             console.log(err)
         }
     },
 
-    getCartCount: async (userId) => {
-        userId=new ObjectId(userId)
-        let count = 0
+    getCartCount: async function (userId) {
+        userId = new ObjectId(userId)
         try {
-            let cart = await db.get().collection(collection.CART_COLLECTION).findOne({user: userId})
-            if (cart) {
-                count=cart.products.length
-                return count
-            }
-        }catch(err) {
+            let cartCount = await db.get().collection(collection.CART_COLLECTION).aggregate([
+
+                {$match: {user: userId}},
+                {$unwind: '$products'},
+                {
+                    $group: {
+                        _id: '$user',
+                        quantity: {$sum: '$products.quantity'},
+                    }
+                }
+            ]).toArray()
+            return cartCount[0].quantity
+        } catch (err) {
+            console.log(err)
+        }
+    },
+
+    removeFromCart: async function (productId, userId) {
+        try {
+            userId = new ObjectId(userId)
+            productId = new ObjectId(productId)
+            await db.get().collection(collection.CART_COLLECTION).updateOne(
+                {user: userId},
+                {$pull: {products: {item: productId}}}
+            )
+        } catch (err) {
+            console.log(err)
+        }
+    },
+
+    incrementCartQuantity: async function (productId, userId) {
+        try {
+            productId = new ObjectId(productId)
+            userId = new ObjectId(userId)
+
+            const cartItems = await db.get().collection(collection.CART_COLLECTION)
+
+            await cartItems.updateOne(
+                {user: userId, 'products.item': productId},
+                {$inc: {'products.$.quantity': 1}}
+            )
+            const result = await cartItems.aggregate([
+                {$match: {user: userId}},
+                {$unwind: '$products'},
+                {$match: {'products.item': productId}},
+                {$project: {quantity:'$products.quantity'}}
+            ]).toArray()
+            return result[0].quantity
+
+        } catch (err) {
+            console.log(err)
+        }
+    },
+
+    decrementCartQuantity: async function (productId, userId) {
+        try {
+            productId = new ObjectId(productId)
+            userId = new ObjectId(userId)
+
+            const cartItems = await db.get().collection(collection.CART_COLLECTION)
+
+            await cartItems.updateOne(
+                {user: userId, 'products.item': productId},
+                {$inc: {'products.$.quantity': -1}}
+            )
+            const result = await cartItems.aggregate([
+                {$match: {user: userId}},
+                {$unwind: '$products'},
+                {$match: {'products.item': productId}},
+                {$project: {quantity:'$products.quantity'}}
+            ]).toArray()
+            return result[0].quantity
+
+        } catch (err) {
             console.log(err)
         }
     }
-
 
 }

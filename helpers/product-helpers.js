@@ -11,7 +11,7 @@ module.exports = {
             console.log(err);
         }
     },
-    getAllProducts: async () => {
+    getAllProducts: async function() {
         try {
             const products = await db.get().collection(collection.PRODUCT_COLLECTION).find().toArray();
             return products;

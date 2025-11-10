@@ -3,21 +3,31 @@ const router = express.Router();
 const productHelpers = require('../helpers/product-helpers')
 const userHelpers = require('../helpers/user-helpers')
 
+const verfyLoginfetch = (req, res, next) => {
+    if (req.session.loggedIn) {
+        next()
+    } else {
+        res.json({status: false, redirect: '/login'})
+    }
+}
+
 const verfyLogin = (req, res, next) => {
     if (req.session.loggedIn) {
         next()
-    } else res.redirect('/login')
+    } else {
+        res.redirect('/login')
+    }
 }
 
 /* GET home page. */
-router.get('/',async function (req, res) {
+router.get('/', async function (req, res) {
     const user = req.session.user;
-    let cartCount=null
-    if (user){
+    let cartCount = null
+    if (user) {
         cartCount = await userHelpers.getCartCount(user._id)
     }
     productHelpers.getAllProducts().then(products => {
-        res.render('user/view-products', {products, user,cartCount});
+        res.render('user/view-products', {products, user, cartCount});
     })
 });
 
@@ -70,22 +80,59 @@ router.get('/logout', function (req, res) {
 
 router.get('/cart', verfyLogin, async function (req, res) {
     const user = req.session.user;
-    let cartCount=null
-    if (user){
+    let cartCount = null
+    if (user) {
         cartCount = await userHelpers.getCartCount(user._id)
     }
     userHelpers.getCartProducts(req.session.user._id).then(products => {
-        console.log(products);
-        res.render('user/cart',{products, user,cartCount});
+        res.render('user/cart', {products, user, cartCount});
     })
 
 })
 
-router.get('/add-to-cart/:id', verfyLogin, function (req, res) {
-    userHelpers.addToCart(req.params.id,req.session.user._id).then(()=>{
-        console.log('cart added')
-        res.redirect('/');
-    })
+router.post('/add-to-cart', verfyLoginfetch, async function (req, res) {
+    try {
+        let response = await userHelpers.addToCart(req.body.productId, req.session.user._id)
+        const cartCount = await userHelpers.getCartCount(req.session.user._id)
+        res.json({status: true, cartCount})
+    } catch (err) {
+        console.log(err)
+        res.json({status: false})
+    }
+
+})
+
+router.delete('/remove-from-cart', verfyLoginfetch, async function (req, res) {
+    try{
+        await userHelpers.removeFromCart(req.body.productId, req.session.user._id)
+        const cartCount = await userHelpers.getCartCount(req.session.user._id)
+        res.json({status: true, cartCount})
+    }catch(err){
+        console.log(err)
+    }
+
+})
+
+router.patch('/increment-cart-quantity', verfyLoginfetch, async function (req, res) {
+    try{
+        let cartProductCount=await userHelpers.incrementCartQuantity(req.body.productId, req.session.user._id)
+        const cartCount = await userHelpers.getCartCount(req.session.user._id)
+        res.json({status: true, cartCount,cartProductCount})
+    }catch(err){
+        console.log(err)
+    }
+
+})
+
+router.patch('/decrement-cart-quantity', verfyLoginfetch, async function (req, res) {
+    try{
+        let cartProductCount = await userHelpers.decrementCartQuantity(req.body.productId, req.session.user._id)
+        const cartCount = await userHelpers.getCartCount(req.session.user._id)
+        res.json({status: true, cartCount, cartProductCount})
+    }catch(err){
+        console.log(err)
+    }
+
 })
 
 module.exports = router;

@@ -54,7 +54,23 @@ module.exports = {
         } catch (err) {
             console.log(err);
         }
-    }
+    },
 
+    formatCurrency:function(items,fieldName) {
+        try {
+            const INRformatter=new Intl.NumberFormat("en-IN", {
+                style: 'currency',
+                currency: 'INR',
+                minimumFractionDigits: 0,
+            })
 
+            return items.map(item=>({
+                ...item,
+                formattedPrice:INRformatter.format(Number(item[fieldName]))
+            }))
+        }catch(err){
+            console.log(err);
+        }
+
+    },
 }

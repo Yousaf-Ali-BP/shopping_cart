@@ -9,6 +9,8 @@
     "bcrypt": "^6.0.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "dotenv": "^17.2.3",
+    "dotenv-safe": "^9.1.0",
     "express": "^4.21.2",
     "express-fileupload": "^1.5.2",
     "express-handlebars": "^8.0.3",
@@ -17,11 +19,13 @@
     "http-errors": "~1.6.3",
     "mongodb": "^6.20.0",
     "morgan": "^1.10.1",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "razorpay": "^2.9.6"
   },
   "devDependencies": {
-    "@eslint/js": "^9.38.0",
-    "eslint": "^9.38.0",
-    "globals": "^16.4.0"
+    "@eslint/js": "^9.39.1",
+    "cross-env": "^10.1.0",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0"
   }
 }

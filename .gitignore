@@ -1,0 +1,56 @@
+# -----------------------------
+# Node.js & Express
+# -----------------------------
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# Build / Output
+dist/
+build/
+coverage/
+
+# Temp files
+*.log
+*.tmp
+tmp/
+logs/
+
+# -----------------------------
+# Environment Variables
+# -----------------------------
+.env
+.env.local
+# -----------------------------
+# OS Generated
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# IDEs & Editors
+# -----------------------------
+
+# WebStorm / JetBrains
+.idea/
+*.iml
+workspace.xml
+
+# VS Code
+.vscode/
+# -----------------------------
+# MongoDB & Runtime Data
+# -----------------------------
+/data/
+/dump/
+*.bson
+*.lock
+
+# PM2 logs
+.pids
+*.pid
+*.seed
+
+# Sensitive file extensions
+*.key
+*.pem

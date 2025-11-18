@@ -22,12 +22,19 @@
                                             <div>
                                                 <h5 class="card-title">{{this.name}}</h5>
                                                 <p class="card-text fs-6">{{this.description}}</p>
-                                                <button class="btn btn-primary fw-bold btn-minus" data-id="{{this.item}}">-</button>
-                                                <span class="mx-2" id="cart-count-{{this.item}}">{{this.quantity}}</span>
-                                                <button class="btn btn-primary fw-bold btn-plus" data-id="{{this.item}}">+</button>
+                                                <h6 class="fw-bold card-text my-3">{{this.formattedPrice}}</h6>
+                                                <button class="btn btn-primary fw-bold btn-minus"
+                                                        data-id="{{this.item}}">-
+                                                </button>
+                                                <span class="mx-2"
+                                                      id="cart-count-{{this.item}}">{{this.quantity}}</span>
+                                                <button class="btn btn-primary fw-bold btn-plus"
+                                                        data-id="{{this.item}}">+
+                                                </button>
                                             </div>
                                             <div>
-                                                <button class="btn btn-danger btn-remove-cart" data-id="{{this.item}}"><i class="bi bi-trash3-fill"></i></button>
+                                                <button class="btn btn-danger btn-remove-cart" data-id="{{this.item}}">
+                                                    <i class="bi bi-trash3-fill"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -36,7 +43,10 @@
 
                         {{/each}}
 
-                        <a href="#" class="btn btn-success float-end fs-5">Place Order</a>
+                        <div class="float-end">
+                            <h6 class="card-text my-3">Total Amount (<span id="total-quantity">{{data.totalQuantity}}</span> item) : <span class="fw-bold" id="total-amount">{{data.formattedPrice}}</span></h6>
+                            <a href="/place-order" class="btn btn-success fs-5">Place Order</a>
+                        </div>
                     </div>
                 </div>
 

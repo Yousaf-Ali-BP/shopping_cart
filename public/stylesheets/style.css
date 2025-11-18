@@ -1,3 +1,17 @@
 .dropdown-menu{
     min-width: 6.5rem;
 }
+.confirm-tick{
+    font-size: 8rem;
+    font-weight: bold;
+}
+.confirm-bg{
+    width: 10rem;
+    height: 10rem;
+}
+
+.order-success-title{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}

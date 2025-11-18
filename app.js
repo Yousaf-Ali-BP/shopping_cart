@@ -33,7 +33,10 @@ app.engine('hbs', hbs.engine({
     extname: 'hbs',
     defaultLayout: 'layout',
     layoutDir: path.join(__dirname, 'views/layouts'),
-    partialsDir: path.join(__dirname, 'views/partials')
+    partialsDir: path.join(__dirname, 'views/partials'),
+    helpers: {
+        eq: (a, b) => a === b
+    }
 }));
 
 // -----------------------------
@@ -50,7 +53,7 @@ app.use(fileUpload());
 // 🔐 Session Middleware
 // -----------------------------
 app.use(session({
-    secret:'Error404NotFoundKey!@2025',
+    secret:process.env.SESSION_SECRET,
     cookie:{maxAge:1800000},
     resave: false,
     saveUninitialized: false
@@ -81,7 +84,7 @@ app.use((req, res, next) => {
 // -----------------------------
 // 💥 Global Error Handler
 // -----------------------------
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 

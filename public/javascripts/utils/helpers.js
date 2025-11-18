@@ -3,12 +3,6 @@ export function updateCartCount(countId, cartCount) {
     countElement.textContent = cartCount
 }
 
-export async function apiGET(endPoint, productId) {
-    const response = await fetch(`/${endPoint}/${productId}`);
-    let data = await response.json();
-    return data
-}
-
 export async function api(url,body,method) {
     const response = await fetch(url,{
         method: method,
@@ -17,3 +11,36 @@ export async function api(url,body,method) {
     })
     return response.json()
 }
+
+export function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        minimumFractionDigits: 2
+    }).format(amount);
+}
+
+export async  function  updatePlaceOrder(itemId,amountId,data) {
+    let itemElement = document.getElementById(itemId);
+    let amountElement = document.getElementById(amountId);
+    itemElement.textContent = data.totalQuantity;
+    amountElement.textContent = formatCurrency(data.totalAmount);
+}
+
+export async function openRazorpayPayment(order){
+    var options = {
+        "key": "rzp_test_RfgguYZ2GMISWh",
+        "amount": order.amount,
+        "currency": "INR",
+        "name": "Shopping cart", //your business name
+        "order_id": order.id,
+        "callback_url": "/razorpay/callback",
+        prefill: {
+            name: order.name,
+            contact: order.mobile
+        }
+    }
+    const rzp = new Razorpay(options);
+    rzp.open();
+}
+

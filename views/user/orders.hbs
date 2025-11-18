@@ -1,0 +1,28 @@
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="my-5">
+
+                {{#each orderData}}
+                    <div class="card mb-3">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title mb-1">Order #{{this.shortId}}</h5>
+                                <p class="mb-0 text-muted small">{{this.formattedDate}} | {{this.paymentMethod}}</p>
+                                <p class="mb-0 fw-semibold">{{this.formattedPrice}} • {{this.totalItems}} items</p>
+                                {{#if (eq this.status 'Placed')}}
+                                    <span class="badge bg-success mt-2">{{this.status}}</span>
+                                {{else}}
+                                    <span class="badge bg-danger mt-2">{{this.status}}</span>
+                                {{/if}}
+
+                            </div>
+                            <a href="/view-order/{{this._id}}" class="btn btn-outline-success fw-bold">View Details</a>
+                        </div>
+                    </div>
+                {{/each}}
+
+            </div>
+        </div>
+    </div>
+</section>

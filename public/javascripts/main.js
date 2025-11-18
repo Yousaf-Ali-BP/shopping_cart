@@ -3,6 +3,15 @@ import * as shop from "./shop.js";
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Disable minus buttons where quantity is 1
+    document.querySelectorAll('.btn-minus').forEach(button => {
+        const productId = button.dataset.id;
+        const quantityElement = document.getElementById(`cart-count-${productId}`);
+        if (Number(quantityElement.textContent) <= 1) {
+            button.disabled = true;
+        }
+    });
+
     // Image preview
     const imageInput = document.getElementById('imageInput');
     if (imageInput) {
@@ -39,6 +48,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const productId = event.target.dataset.id;
             shop.decrementCartQuantity(productId);
         })
+    })
+
+    //Place Order Form
+    document.getElementById('checkout-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const formObject = Object.fromEntries(formData.entries());
+        shop.checkoutForm(formObject);
     })
 
 

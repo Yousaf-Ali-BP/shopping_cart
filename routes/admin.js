@@ -1,15 +1,67 @@
 const express = require('express');
 const router = express.Router();
 const productHelpers = require("../helpers/product-helpers");
+const adminHelpers = require("../helpers/admin-helpers");
+
+
+const verifyLogin = (req, res, next) => {
+    if (req.session.adminLoggedIn) {
+        next()
+    } else {
+        res.redirect('/admin/login')
+    }
+}
+
+//Admin login
+router.get('/login', async function (req, res) {
+    try {
+        if (req.session.adminLoggedIn) {
+            res.redirect('/admin');
+        } else {
+            res.render('admin/admin-login', {admin:true,adminLoginError:req.session.adminLoginError});
+            req.session.adminLoginError = false;
+        }
+    }catch(err) {
+        console.log(err);
+    }
+})
+
+router.post('/login', async function (req, res) {
+    try{
+       const response= await adminHelpers.dologin( req.body)
+        if(response.status){
+            req.session.admin={
+                _id:response.admin._id,
+                name:response.admin.name,
+                email:response.admin.email,
+                role:response.admin.role,
+                createdAt:response.admin.createdAt
+            }
+            req.session.adminLoggedIn=true;
+            res.redirect(`/admin`)
+        }else {
+            req.session.adminLoginError ='Invalid Email or Password !'
+            res.redirect('/admin/login')
+        }
+    }catch(err) {
+        console.log(err);
+    }
+})
+
+router.get('/logout', function (req, res) {
+    req.session.destroy();
+    res.redirect('/admin/login');
+})
+
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
+router.get('/',verifyLogin, function (req, res, next) {
     productHelpers.getAllProducts().then(products => {
         res.render('admin/view-products', {admin: true, products});
     })
 });
 
-router.get('/add-product', function (req, res) {
+router.get('/add-product',verifyLogin, function (req, res) {
     res.render('admin/add-product',{admin: true});
 })
 

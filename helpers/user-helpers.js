@@ -38,12 +38,10 @@ module.exports = {
             if (user) {
                 let status = await bcrypt.compare(userdata.password, user.password)
                 if (status) {
-                    console.log('login success : ' + status)
                     response.user = user
                     response.status = true
                     return response
                 } else {
-                    console.log('login fail : ' + status)
                     return {status: false}
                 }
             } else {

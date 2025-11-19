@@ -23,6 +23,7 @@ const verifyLogin = (req, res, next) => {
 /* GET home page. */
 router.get('/', async function (req, res) {
     const user = req.session.user;
+    console.log(user);
     let cartCount = null
     if (user) {
         cartCount = await userHelpers.getCartCount(user._id)
@@ -55,7 +56,11 @@ router.post('/signup', function (req, res) {
     userHelpers.dosignup(req.body).then(response => {
         if (response.status) {
             req.session.loggedIn = true;
-            req.session.user = response.user;
+            req.session.user = {
+                _id: response.user._id,
+                name: response.user.name,
+                email: response.user.email,
+            };
             res.redirect('/');
         } else {
             req.session.signupError = 'This email is already registered. Please log in or use another email.'
@@ -69,7 +74,11 @@ router.post('/login', function (req, res) {
     userHelpers.dologin(req.body).then(response => {
         if (response.status) {
             req.session.loggedIn = true;
-            req.session.user = response.user;
+            req.session.user ={
+                _id: response.user._id,
+                name: response.user.name,
+                email: response.user.email,
+            };
             res.redirect('/');
         } else {
             req.session.loginError = 'Invalid Email or Password !'
@@ -78,7 +87,7 @@ router.post('/login', function (req, res) {
     })
 })
 router.get('/logout', function (req, res) {
-    req.session.destroy();
+    req.session=null;
     res.redirect('/');
 })
 

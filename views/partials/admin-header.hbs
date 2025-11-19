@@ -20,10 +20,15 @@
                     </li>
 
                 </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                <div class="dropdown">
+                    <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Admin Panel
+                    </button>
+                    <div class="dropdown-menu bg-success-subtle" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item text-success-emphasis" href="/admin/logout">Log Out</a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>

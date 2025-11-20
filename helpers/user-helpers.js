@@ -312,11 +312,10 @@ module.exports = {
 
     },
 
-    getOrderDetails: async function (userId, orderId) {
+    getOrderDetails: async function (orderId) {
         try {
-            userId = new ObjectId(userId)
             orderId = new ObjectId(orderId)
-            let orders = await db.get().collection(collection.ORDER_COLLECTION).findOne({userId: userId, _id: orderId})
+            let orders = await db.get().collection(collection.ORDER_COLLECTION).findOne({_id: orderId})
             orders.formattedDate = new Date(orders.date).toLocaleDateString('en-IN', {
                 year: 'numeric',
                 month: "long",
@@ -343,8 +342,6 @@ module.exports = {
         } catch (err) {
             console.log(err)
         }
-
-
     },
 
     generateRazorpay: async function (orderId, total) {

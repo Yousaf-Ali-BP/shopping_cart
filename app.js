@@ -35,7 +35,10 @@ app.engine('hbs', hbs.engine({
     layoutDir: path.join(__dirname, 'views/layouts'),
     partialsDir: path.join(__dirname, 'views/partials'),
     helpers: {
-        eq: (a, b) => a === b
+        eq: (a, b) => a === b,
+        inc: function (value) {
+            return parseInt(value) + 1;
+        }
     }
 }));
 

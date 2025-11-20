@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const productHelpers = require("../helpers/product-helpers");
 const adminHelpers = require("../helpers/admin-helpers");
+const userHelpers = require("../helpers/user-helpers");
 
 
 const verifyLogin = (req, res, next) => {
@@ -55,7 +56,7 @@ router.get('/logout', function (req, res) {
 
 
 /* GET users listing. */
-router.get('/',verifyLogin, function (req, res, next) {
+router.get('/',verifyLogin, function (req, res) {
     productHelpers.getAllProducts().then(products => {
         res.render('admin/view-products', {admin: true, products});
     })
@@ -100,6 +101,36 @@ router.post('/edit-product/:id',function (req, res) {
             image.mv('./public/product-images/' +productId+ '.webp')
         }
     })
+})
+
+router.get('/all-orders',verifyLogin,async function (req, res) {
+    try {
+        const orders=await adminHelpers.getAllOrders()
+        res.render('admin/view-orders', {admin:true,orders:orders})
+        console.log(orders)
+    }catch(err) {
+        console.log(err);
+    }
+})
+
+router.get('/view-orderDetails/:id', verifyLogin, async function (req, res) {
+    try {
+        const orderId = req.params.id;
+        const user=await adminHelpers.getUser(orderId);
+        const orderDetails=await userHelpers.getOrderDetails(orderId);
+        res.render('admin/view-orderDetails', {admin:true,orderDetails,user})
+    }catch(err) {
+        console.log(err);
+    }
+})
+
+router.get('/all-users',verifyLogin,async function (req, res) {
+    try {
+        const data=await adminHelpers.getAllUsers();
+        res.render('admin/view-users', {admin:true,data});
+    }catch(err) {
+        console.log(err);
+    }
 })
 
 module.exports = router;

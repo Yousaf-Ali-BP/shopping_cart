@@ -1,0 +1,42 @@
+<section>
+    <div class="container">
+        <div class="row mt-5">
+
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <table class="table mt-3">
+                <thead>
+                <tr>
+                    <th scope="col">Order Id</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Total Amount</th>
+                    <th scope="col">Total Items</th>
+                    <th scope="col">Payment Method</th>
+                    <th scope="col">Payment Status</th>
+                    <th scope="col">Order Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each orders}}
+                    <tr>
+                        <td>#{{this.shortId}}</td>
+                        <td>{{this.formattedDate}}</td>
+                        <td>{{this.deliveryDetails.name}}</td>
+                        <td>{{this.deliveryDetails.mobile}}</td>
+                        <td>{{this.formattedTotalAmount}}</td>
+                        <td>{{this.totalItems}}</td>
+                        <td>{{this.paymentMethod}}</td>
+                        <td>{{this.paymentStatus}}</td>
+                        <td>{{this.status}}</td>
+                        <td><a href="/admin/view-orderDetails/{{this._id}}" class="btn btn-success">View Details</a></td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

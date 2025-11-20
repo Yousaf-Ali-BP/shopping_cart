@@ -225,7 +225,7 @@ router.get('/view-order/:id',verifyLogin, async function (req, res) {
     try {
         const user = req.session.user;
         const orderId = req.params.id;
-        let orderDetails=await userHelpers.getOrderDetails(user._id,orderId)
+        let orderDetails=await userHelpers.getOrderDetails(orderId)
         const cartCount = await userHelpers.getCartCount(user._id)
         res.render('user/view-order',{user,orderDetails,cartCount})
 

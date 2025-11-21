@@ -87,7 +87,7 @@ router.post('/login', function (req, res) {
     })
 })
 router.get('/logout', function (req, res) {
-    req.session=null;
+    req.session.destroy();
     res.redirect('/');
 })
 

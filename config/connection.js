@@ -1,29 +1,31 @@
-const {MongoClient, ServerApiVersion} = require('mongodb');
-const state = {
-    db: null
-}
+const { MongoClient } = require('mongodb');
 
-module.exports = {
-    connect: async () => {
-        try {
-            const uri = process.env.MONGO_URL;
-            const dbName = process.env.MONGO_DB_NAME;
-            console.log("Connecting to:", uri);
-            const client = await MongoClient.connect(uri, {
-                ssl: true,
-                maxPoolSize: 10,
-            });
-            state.db = client.db(dbName);
-            console.log(`✅ Connected to MongoDB database: ${dbName}`);
-        } catch (err) {
-            console.error("❌ Database connection failed:", err);
+const state = { db: null };
+
+module.exports.connect = async function () {
+    try {
+        const url = process.env.MONGO_URL;
+        const dbname = process.env.MONGO_DB_NAME;
+
+        if (!url) {
+            throw new Error("❌ MONGO_URL is missing in render environment variables");
         }
-    },
-    get : function () {
-        return state.db;
+
+        if (!dbname) {
+            throw new Error("❌ MONGO_DB_NAME is missing in render environment variables");
+        }
+
+        console.log("Trying to connect:", url, "DB:", dbname);
+
+        const client = await MongoClient.connect(url);
+        state.db = client.db(dbname);
+
+        console.log("✅ MongoDB connected successfully!");
+    } catch (err) {
+        console.error("❌ Database connection failed:", err);
     }
+};
 
-
-
-}
-
+module.exports.get = function () {
+    return state.db;
+};

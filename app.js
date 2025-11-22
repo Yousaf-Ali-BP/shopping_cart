@@ -20,8 +20,8 @@ app.use(express.static('public'));
 // -----------------------------
 // 🧭 Route Imports
 // -----------------------------
-const userRouter = require('./routes/user');   
-const adminRouter = require('./routes/admin'); 
+const userRouter = require('./routes/user');
+const adminRouter = require('./routes/admin');
 
 // -----------------------------
 // 🖼️ View Engine Setup
@@ -47,7 +47,7 @@ app.engine('hbs', hbs.engine({
 // -----------------------------
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(fileUpload());
@@ -56,8 +56,8 @@ app.use(fileUpload());
 // 🔐 Session Middleware
 // -----------------------------
 app.use(session({
-    secret:process.env.SESSION_SECRET,
-    cookie:{maxAge:1800000},
+    secret: process.env.SESSION_SECRET || 'defaultsecret',
+    cookie: {maxAge: 1800000},
     resave: false,
     saveUninitialized: false
 }))
@@ -65,11 +65,10 @@ app.use(session({
 // -----------------------------
 // 🗄️ Database Connection
 // -----------------------------
-console.log('Trying to connect to database...');
 
 db.connect()
-    .then(() => console.log('✅ Connected to database'))
-    .catch(err => console.error('❌ Database connection failed:', err));
+    .then(() => console.log("🟢 DB Ready"))
+    .catch((err) => console.error("❌ DB Error:", err));
 
 // -----------------------------
 // 🚦 Routes
